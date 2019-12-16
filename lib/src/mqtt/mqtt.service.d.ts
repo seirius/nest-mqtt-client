@@ -3,6 +3,7 @@ export declare class MqttService {
     private mqttClient;
     private connected;
     private subscriptions;
+    private warnedAboutConnection;
     constructor();
     push({ channel, payload }: IPushOptions): void;
     sub({ channel, callback }: ISubOptions): void;

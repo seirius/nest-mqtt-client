@@ -10,6 +10,7 @@ export class MqttService {
     private mqttClient: Client;
     private connected = false;
     private subscriptions: ISubscriptions = {};
+    private warnedAboutConnection = false;
 
     constructor() {
         this.mqttClient = connect(MqttConfig.HOST);
@@ -27,7 +28,10 @@ export class MqttService {
  
     public push({channel, payload}: IPushOptions): void {
         if (!this.connected) {
-            this.logger.warn("Make sure mqtt client is connected before anything");
+            if (!this.warnedAboutConnection) {
+                this.warnedAboutConnection = true;
+                this.logger.warn("Make sure mqtt client is connected before anything");
+            }
             return;
         }
         this.mqttClient.publish(channel, JSON.stringify(payload));
