@@ -15,7 +15,7 @@ export class ProcessStateService {
 
     setAsReportListener(): void {
         this.mqttService.sub({
-            channel: PROCESS_STATE_CHANNEL.receiveReport,
+            channel: PROCESS_STATE_CHANNEL.processReport,
             callback: (payload: IProcessStateReport) => {
                 const petition = this.petitions.find(p => p.id === payload.petitionId);
                 if (petition) {
@@ -48,7 +48,7 @@ export class ProcessStateService {
             },
         });
         this.mqttService.push({
-            channel: PROCESS_STATE_CHANNEL.askReport,
+            channel: PROCESS_STATE_CHANNEL.reportQuestion,
             payload: {
                 petitionId,
             },
@@ -57,7 +57,7 @@ export class ProcessStateService {
 
     sendReport(report: IProcessStateReport): void {
         this.mqttService.push({
-            channel: PROCESS_STATE_CHANNEL.sendReport,
+            channel: PROCESS_STATE_CHANNEL.processReport,
             payload: report,
         });
     }
@@ -65,7 +65,7 @@ export class ProcessStateService {
     onReportQuestion(): Observable<IReportPetitionPayload> {
         return new Observable<IReportPetitionPayload>(subscriber => {
             this.mqttService.sub({
-                channel: PROCESS_STATE_CHANNEL.onReportQuestion,
+                channel: PROCESS_STATE_CHANNEL.reportQuestion,
                 callback: (payload: IReportPetitionPayload) => subscriber.next(payload),
             });
         });

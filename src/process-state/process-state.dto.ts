@@ -1,8 +1,6 @@
 export const PROCESS_STATE_CHANNEL = {
-    sendReport: "process_state:sendReport",
-    receiveReport: "process_state:receiveReport",
-    askReport: "process_state:askReport",
-    onReportQuestion: "process_state:onReportQuestion",
+    processReport: "process_state:processReport",
+    reportQuestion: "process_state:reportQuestion",
 };
 
 export interface IProcessExpectation {
