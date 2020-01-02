@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { MqttService } from "./../mqtt/mqtt.service";
-import { IProcessStateReport, PROCESS_STATE_CHANNEL, IProcessReport, IAskForReport } from "./process-state.dto";
+import { IProcessStateReport, PROCESS_STATE_CHANNEL, IProcessReport, IAskForReport, IReportPetitionPayload } from "./process-state.dto";
 import { v4 as uuid } from "uuid";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class ProcessStateService {
@@ -10,7 +11,9 @@ export class ProcessStateService {
 
     constructor(
         private mqttService: MqttService,
-    ) {
+    ) { }
+
+    setAsReportListener(): void {
         this.mqttService.sub({
             channel: PROCESS_STATE_CHANNEL.receiveReport,
             callback: (payload: IProcessStateReport) => {
@@ -34,8 +37,9 @@ export class ProcessStateService {
     }
 
     askForReport({expect, onReport, feedbackOnEachReport}: IAskForReport): void {
+        const petitionId = uuid();
         this.petitions.push({
-            id: uuid(),
+            id: petitionId,
             reports: [],
             reportQuestion: {
                 expect,
@@ -45,6 +49,9 @@ export class ProcessStateService {
         });
         this.mqttService.push({
             channel: PROCESS_STATE_CHANNEL.askReport,
+            payload: {
+                petitionId,
+            },
         });
     }
 
@@ -52,6 +59,15 @@ export class ProcessStateService {
         this.mqttService.push({
             channel: PROCESS_STATE_CHANNEL.sendReport,
             payload: report,
+        });
+    }
+
+    onReportQuestion(): Observable<IReportPetitionPayload> {
+        return new Observable<IReportPetitionPayload>(subscriber => {
+            this.mqttService.sub({
+                channel: PROCESS_STATE_CHANNEL.onReportQuestion,
+                callback: (payload: IReportPetitionPayload) => subscriber.next(payload),
+            });
         });
     }
 
