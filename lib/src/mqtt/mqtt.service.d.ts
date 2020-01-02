@@ -10,11 +10,11 @@ export declare class MqttService {
     isConnected(): boolean;
 }
 export interface ISubscriptions {
-    [key: string]: ISubOptions["callback"][];
+    [key: string]: Array<ISubOptions["callback"]>;
 }
 export interface IPushOptions {
     channel: string;
-    payload: Record<string, any>;
+    payload?: Record<string, any>;
 }
 export interface ISubOptions {
     channel: string;
