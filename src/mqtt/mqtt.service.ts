@@ -25,7 +25,7 @@ export class MqttService {
         });
 
     }
- 
+
     public push({channel, payload}: IPushOptions): void {
         if (!this.connected) {
             if (!this.warnedAboutConnection) {
@@ -33,6 +33,9 @@ export class MqttService {
                 this.logger.warn("Make sure mqtt client is connected before anything");
             }
             return;
+        }
+        if (!payload) {
+            payload = {};
         }
         this.mqttClient.publish(channel, JSON.stringify(payload));
     }
@@ -54,12 +57,12 @@ export class MqttService {
 }
 
 export interface ISubscriptions {
-    [key: string]: ISubOptions["callback"][];
+    [key: string]: Array<ISubOptions["callback"]>;
 }
 
 export interface IPushOptions {
     channel: string;
-    payload: Record<string, any>;
+    payload?: Record<string, any>;
 }
 
 export interface ISubOptions {
