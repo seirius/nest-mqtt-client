@@ -3,6 +3,7 @@ import { IProcessStateReport, IAskForReport, IReportPetitionPayload } from "./pr
 import { Observable } from "rxjs";
 export declare class ProcessStateService {
     private mqttService;
+    private readonly logger;
     private petitions;
     constructor(mqttService: MqttService);
     setAsReportListener(): void;

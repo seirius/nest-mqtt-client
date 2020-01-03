@@ -1,8 +1,6 @@
 export declare const PROCESS_STATE_CHANNEL: {
-    sendReport: string;
-    receiveReport: string;
-    askReport: string;
-    onReportQuestion: string;
+    processReport: string;
+    reportQuestion: string;
 };
 export interface IProcessExpectation {
     name: string;

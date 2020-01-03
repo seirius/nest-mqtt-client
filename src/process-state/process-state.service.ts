@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { MqttService } from "./../mqtt/mqtt.service";
 import { IProcessStateReport, PROCESS_STATE_CHANNEL, IProcessReport, IAskForReport, IReportPetitionPayload } from "./process-state.dto";
 import { v4 as uuid } from "uuid";
@@ -6,6 +6,8 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class ProcessStateService {
+
+    private readonly logger = new Logger(ProcessStateService.constructor.name);
 
     private petitions: IProcessReport[] = [];
 
@@ -17,6 +19,7 @@ export class ProcessStateService {
         this.mqttService.sub({
             channel: PROCESS_STATE_CHANNEL.processReport,
             callback: (payload: IProcessStateReport) => {
+                this.logger.debug(`incomming process report ${JSON.stringify(payload, null, 2)}`);
                 const petition = this.petitions.find(p => p.id === payload.petitionId);
                 if (petition) {
                     const {reports, reportQuestion: {expect, onReport, feedbackOnEachReport}} = petition;
@@ -66,7 +69,10 @@ export class ProcessStateService {
         return new Observable<IReportPetitionPayload>(subscriber => {
             this.mqttService.sub({
                 channel: PROCESS_STATE_CHANNEL.reportQuestion,
-                callback: (payload: IReportPetitionPayload) => subscriber.next(payload),
+                callback: (payload: IReportPetitionPayload) => {
+                    this.logger.debug(`incomming state request ${JSON.stringify(payload, null, 2)}`);
+                    subscriber.next(payload);
+                },
             });
         });
     }
