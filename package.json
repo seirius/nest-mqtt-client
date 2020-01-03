@@ -1,6 +1,6 @@
 {
   "name": "nest-mqtt-client",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Mqtt client for nest",
   "main": "lib/index.js",
   "scripts": {

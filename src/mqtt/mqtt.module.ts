@@ -3,6 +3,6 @@ import { MqttService } from "./mqtt.service";
 
 @Module({
     providers: [MqttService],
-    exports: [MqttService]
+    exports: [MqttService],
 })
 export class MqttModule {}
