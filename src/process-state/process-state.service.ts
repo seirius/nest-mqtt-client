@@ -29,8 +29,7 @@ export class ProcessStateService {
                         reports.push(payload);
 
                         if (expect
-                            .every(({name: exName}) => reports
-                            .filter(({name: rName}) => exName === rName).length === expect.length) ) {
+                            .every(({name: exName, times}) => reports.filter(({name: rName}) => exName === rName).length === times) ) {
                             onReport(reports);
                         }
                     }
